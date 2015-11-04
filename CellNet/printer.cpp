@@ -21,12 +21,14 @@ Printer * Printer::instance()
 std::vector<StationDescr> Printer::loadStations() const
 {
     std::vector<StationDescr> res;
-    std::ifstream in("config.txt");
+    std::ifstream in("config.ini");
     std::string buff;
-//    std::getline(in, buff);
-//    StationDescr descr;
-//    buff >> descr.x >> descr.y >> descr.h;
-//    res.push_back(descr);
+//  std::getline(in, buff, " ");
+    StationDescr descr;
+    in >> descr.x >> descr.y;
+    std::cout << in << descr.x << descr.y;
+    res.push_back(descr);
+    in.close();
     return res;
 }
 
@@ -43,4 +45,5 @@ void Printer::print() const
     std::ofstream out("myfile.txt");
     for(size_t i = 0; i < text.size(); i++)
         out << text.at(i) << std::endl;
+    out.close();
 }

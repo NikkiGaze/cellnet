@@ -98,6 +98,9 @@ void Model::clear()
 
 void Model::startAlgorihtm(int population_count, int crossing, int generations_count) const
 {
+    if(stations.size() == 0)
+        return;
+
     GeneticAlgorhitm algo(stations.size(), population_count, crossing);
 
     for(int generation_num = 0; generation_num < generations_count; generation_num++)

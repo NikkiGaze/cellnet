@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     baseRadius_edit->setReadOnly(true);
     QLabel * relief_lbl = new QLabel("Relief");
     relief_combo = new QComboBox();
-    relief_combo->addItems(QStringList() << "DEFAULT" << "SINUS" << "LINEAR" << "MODULE" << "BLOCK");
+    relief_combo->addItems(QStringList() << "DEFAULT" << "FROM FILE" << "SINUS" << "LINEAR" << "MODULE" << "BLOCK");
 
     base_lay->addWidget(baseRadius_lbl);
     base_lay->addWidget(baseRadius_edit);

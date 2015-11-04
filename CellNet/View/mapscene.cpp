@@ -127,6 +127,8 @@ bool MapScene::addEmptyStation(int _x, int _y)
 
 void MapScene::addMask(std::set<std::pair<int, int> > _mask)
 {
+    if(_mask.empty())
+        return;
     if(mask)
     {
         removeItem(mask);

@@ -14,6 +14,7 @@ class ReliefGenerator
     static int blockFunction(int i, int j);
 
     static std::vector<std::vector<int> > generateDefault();
+    static std::vector<std::vector<int> > generateFromFile();
     static std::vector<std::vector<int> > generateFunction(int (*highFunction)(int i, int j));
 
     static std::vector<std::vector<int> > generateSinus();
@@ -25,6 +26,7 @@ public:
     enum Mode
     {
         DEFAULT,
+        FILE,
         SINUS,
         LINEAR,
         MODULE,
