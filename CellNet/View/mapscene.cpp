@@ -2,9 +2,11 @@
 
 #include <QPainter>
 #include <iostream>
+#include <cmath>
 
-
-const int scaleFactor = 5;
+const float scaleFactor = 5.0;
+const float step = 15.0;
+const float scale_val= scaleFactor / step;
 
 MapScene::MapImage::MapImage(std::vector<std::vector<int> > _map, QGraphicsItem * parent) : QGraphicsItem(parent)
 {
@@ -15,7 +17,7 @@ MapScene::MapImage::MapImage(std::vector<std::vector<int> > _map, QGraphicsItem 
 
 QRectF MapScene::MapImage::boundingRect() const
 {
-    return QRectF(0, 0, width * scaleFactor, height * scaleFactor);
+    return QRectF(0, 0, width * scale_val, height * scale_val);
 }
 
 void MapScene::MapImage::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -24,12 +26,12 @@ void MapScene::MapImage::paint(QPainter *painter, const QStyleOptionGraphicsItem
     (void) widget;
 
     painter->setPen(Qt::black);
-    for(size_t i = 0; i < map.size(); i++)
-        for(size_t j = 0; j < map.at(i).size(); j++)
+    for(size_t i = 0; i < map.size(); i += step)
+        for(size_t j = 0; j < map.at(i).size(); j += step)
         {
             QColor color(50, map.at(i).at(j), 50);
             painter->setBrush(color);
-            painter->drawRect(i * scaleFactor, j * scaleFactor, scaleFactor, scaleFactor);
+            painter->drawRect(i * scale_val, j * scale_val, scaleFactor, scaleFactor);
         }
 }
 
@@ -44,7 +46,7 @@ MapScene::BaseStation::BaseStation(int _x, int _y, bool _empty, QGraphicsItem * 
 
 QRectF MapScene::BaseStation::boundingRect() const
 {
-    return QRectF(x * scaleFactor, y * scaleFactor, scaleFactor, scaleFactor);
+    return QRectF(x * scale_val, y * scale_val, scaleFactor, scaleFactor);
 }
 
 void MapScene::BaseStation::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -53,7 +55,7 @@ void MapScene::BaseStation::paint(QPainter *painter, const QStyleOptionGraphicsI
     (void) widget;
 
     painter->setBrush(isEmpty ? Qt::blue : Qt::red);
-    painter->drawRect(x * scaleFactor, y * scaleFactor, scaleFactor, scaleFactor);
+    painter->drawRect(x * scale_val, y * scale_val, scaleFactor, scaleFactor);
 }
 
 //----------------------------------------------------------------
@@ -77,7 +79,7 @@ void MapScene::Mask::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     painter->setBrush(QColor(0, 0, 255, 10));
     for(std::set<std::pair<int, int> >::iterator mask_iter = mask.begin(); mask_iter != mask.end(); ++mask_iter)
     {
-        painter->drawRect((*mask_iter).first * scaleFactor, (*mask_iter).second * scaleFactor, scaleFactor, scaleFactor);
+        painter->drawRect(std::floor((*mask_iter).first / step) * scaleFactor, std::floor((*mask_iter).second / step) * scaleFactor, scaleFactor, scaleFactor);
     }
 }
 

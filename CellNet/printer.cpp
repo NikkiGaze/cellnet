@@ -21,12 +21,24 @@ Printer * Printer::instance()
 std::vector<StationDescr> Printer::loadStations() const
 {
     std::vector<StationDescr> res;
-    std::ifstream in("config.txt");
-    std::string buff;
-//    std::getline(in, buff);
-//    StationDescr descr;
-//    buff >> descr.x >> descr.y >> descr.h;
-//    res.push_back(descr);
+    std::ifstream file("config.ini");
+    if(!file.is_open())
+        return res;
+
+    while (!file.eof())
+    {
+        std::string line;
+        std::getline(file, line);
+        if(line.empty())
+            break;
+        std::istringstream ist(line);
+
+        StationDescr descr;
+        ist >> descr.x >> descr.y;
+        descr.h = 30;
+        res.push_back(descr);
+    }
+    file.close();
     return res;
 }
 

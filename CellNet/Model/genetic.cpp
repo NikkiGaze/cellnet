@@ -70,7 +70,8 @@ void Genom::randomGenerate()
         tmp |= (1 << i);
     }
 
-    mask |= std::rand() % tmp;;
+    tmp++;
+    mask |= std::rand() % tmp;
 }
 
 void Genom::activate(unsigned int bit, bool activate)

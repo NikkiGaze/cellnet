@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QHBoxLayout * base_lay = new QHBoxLayout();
     QLabel * baseRadius_lbl = new QLabel("Base radius: ");
-    baseRadius_edit = new QLineEdit("20.0");
+    baseRadius_edit = new QLineEdit("80.0");
     baseRadius_edit->setReadOnly(true);
     QLabel * relief_lbl = new QLabel("Relief");
     relief_combo = new QComboBox();

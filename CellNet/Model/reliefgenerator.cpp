@@ -15,8 +15,8 @@ inline float sign(float x)
     return std::abs(x) / x;
 }
 
-int ReliefGenerator::width = 100;
-int ReliefGenerator::height = 100;
+int ReliefGenerator::width = 3600;
+int ReliefGenerator::height = 3600;
 
 std::vector<std::vector<int> > ReliefGenerator::generate(Mode mode)
 {
@@ -40,7 +40,7 @@ std::vector<std::vector<int> > ReliefGenerator::generate(Mode mode)
 std::vector<std::vector<int> > ReliefGenerator::generateDefault()
 {
     std::vector<std::vector<int> > res;
-    const int startHeight = 130;
+    const int startHeight = 140;
 
     int currHeight = startHeight;
 
@@ -62,7 +62,7 @@ std::vector<std::vector<int> > ReliefGenerator::generateDefault()
             if(j != 0 )
             {
                 if(i > 0)
-                    currHeight = (res.at(i).at(j - 1) + res.at(i - 1).at(j)) / 2 + generateChange();
+                    currHeight = float((res.at(i).at(j - 1) + res.at(i - 1).at(j))) / 2.0 + generateChange();
                 else
                     currHeight = res.at(0).at(j - 1) + generateChange();
             }

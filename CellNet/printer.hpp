@@ -11,6 +11,12 @@ struct StationDescr
     int h;
 };
 
+struct SubDescr
+{
+    int survival;
+    int size;
+};
+
 class Printer
 {
     std::vector<std::string> text;
