@@ -55,4 +55,5 @@ void Printer::print() const
     std::ofstream out("myfile.txt");
     for(size_t i = 0; i < text.size(); i++)
         out << text.at(i) << std::endl;
+    out.close();
 }

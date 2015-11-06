@@ -6,6 +6,13 @@
 
 struct StationDescr
 {
+    StationDescr()
+    {
+        x = 0;
+        y = 0;
+        h = 30;
+    }
+
     int x;
     int y;
     int h;

@@ -64,6 +64,9 @@ std::string Genom::toString(bool just_gen) const
 void Genom::randomGenerate()
 {
     mask = 0;
+    if(size == 0)
+        return;
+
     int tmp = 0;
     for(unsigned int i = 0; i < size; i++)
     {

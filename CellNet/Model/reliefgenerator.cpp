@@ -24,6 +24,8 @@ std::vector<std::vector<int> > ReliefGenerator::generate(Mode mode)
     {
     case DEFAULT:
         return generateDefault();
+    case FILE:
+        return generateFromFile();
     case SINUS:
         return generateFunction(&sinusFunction);
     case LINEAR:
@@ -76,6 +78,12 @@ std::vector<std::vector<int> > ReliefGenerator::generateDefault()
             res.at(i).push_back(currHeight);
         }
     }
+    return res;
+}
+
+std::vector<std::vector<int> > ReliefGenerator::generateFromFile()
+{
+    std::vector<std::vector<int> > res;
     return res;
 }
 
