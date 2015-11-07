@@ -2,6 +2,10 @@
 
 #include <QLayout>
 #include <QLabel>
+#include <QProgressDialog>
+#include <QDir>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include "mapscene.hpp"
 #include "Model/model.hpp"
@@ -24,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QHBoxLayout * base_lay = new QHBoxLayout();
     QLabel * baseRadius_lbl = new QLabel("Base radius: ");
-    baseRadius_edit = new QLineEdit("80.0");
+    baseRadius_edit = new QLineEdit("20.0");
     baseRadius_edit->setReadOnly(true);
     QLabel * relief_lbl = new QLabel("Relief");
     relief_combo = new QComboBox();
@@ -55,11 +59,11 @@ MainWindow::MainWindow(QWidget *parent)
     QHBoxLayout * genetic_lay = new QHBoxLayout();
 
     QLabel * population_lbl = new QLabel("Population: ");
-    population_edit = new QLineEdit("10");
+    population_edit = new QLineEdit("16");
     QLabel * crossing_lbl = new QLabel("Crossing: ");
-    crossing_edit = new QLineEdit("10");
+    crossing_edit = new QLineEdit("16");
     QLabel * generations_lbl = new QLabel("Generations: ");
-    generations_edit = new QLineEdit("10");
+    generations_edit = new QLineEdit("40");
     genetic_btn = new QPushButton("Start genetic");
 
     genetic_lay->addWidget(population_lbl);
@@ -125,6 +129,11 @@ void MainWindow::slotShowDemo()
         if(gen.contains(i))
         {
             scene->addRealStation(x, y);
+            if(i == 3)
+            {
+                int a = 1;
+                (void)a;
+            }
         }
         else
         {
@@ -141,13 +150,19 @@ void MainWindow::slotShowDemo()
 
 void MainWindow::slotStartAlgorihtm()
 {
-    blockSignals(true);
     int population_count = population_edit->text().toInt();
     int crossing = crossing_edit->text().toInt();
     int generations_count = generations_edit->text().toInt();
 
-    model->startAlgorihtm(population_count, crossing, generations_count);
-    blockSignals(false);
+    QProgressDialog progress("Processing...", "Abort", 0, generations_count, this);
+    progress.setWindowModality(Qt::WindowModal);
+    progress.setMinimumDuration(0);
+
+    model->startAlgorihtm(population_count, crossing, generations_count, &progress);
+    progress.setValue(generations_count);
+    QString patch ("./");
+    QDir dir(patch);
+    QDesktopServices::openUrl(QUrl::fromLocalFile(dir.absolutePath() + "/generations_out.txt"));
 }
 
 void MainWindow::slotGenerateRelief(int mode)

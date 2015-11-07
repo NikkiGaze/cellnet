@@ -5,7 +5,7 @@
 #include <cmath>
 
 const float scaleFactor = 5.0;
-const float step = 15.0;
+const float step = 1.0;
 const float scale_val= scaleFactor / step;
 
 MapScene::MapImage::MapImage(std::vector<std::vector<int> > _map, QGraphicsItem * parent) : QGraphicsItem(parent)
@@ -108,8 +108,16 @@ bool MapScene::addRealStation(int _x, int _y)
         || (_y < 0 || _y >= img->height))
             return false;
 
-    BaseStation * station = new BaseStation(_x, _y);
-    addItem(station);
+    BaseStation * curStat = dynamic_cast<BaseStation * >(itemAt(_x, _y, QTransform()));
+    if(curStat)
+    {
+        curStat->isEmpty = false;
+    }
+    else
+    {
+        BaseStation * station = new BaseStation(_x, _y);
+        addItem(station);
+    }
     return true;
 }
 
@@ -122,8 +130,16 @@ bool MapScene::addEmptyStation(int _x, int _y)
         || (_y < 0 || _y >= img->height))
             return false;
 
-    BaseStation * station = new BaseStation(_x, _y, true);
-    addItem(station);
+    BaseStation * curStat = dynamic_cast<BaseStation * >(itemAt(_x, _y, QTransform()));
+    if(curStat)
+    {
+        curStat->isEmpty = true;
+    }
+    else
+    {
+        BaseStation * station = new BaseStation(_x, _y, true);
+        addItem(station);
+    }
     return true;
 }
 

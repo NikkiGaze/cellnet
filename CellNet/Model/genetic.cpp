@@ -241,3 +241,14 @@ std::vector<Genom> GeneticAlgorhitm::getPopulation() const
 {
     return currentPopulation;
 }
+
+float GeneticAlgorhitm::getAverageCoverage() const
+{
+    float sum = 0;
+    for(size_t i = 0; i < currentPopulation.size(); i++)
+    {
+        Genom gen = currentPopulation.at(i);
+        sum += (float)gen.survival / (float)gen.bitSum();
+    }
+    return sum / currentPopulation.size();
+}

@@ -15,8 +15,8 @@ inline float sign(float x)
     return std::abs(x) / x;
 }
 
-int ReliefGenerator::width = 3600;
-int ReliefGenerator::height = 3600;
+int ReliefGenerator::width = 100;
+int ReliefGenerator::height = 100;
 
 std::vector<std::vector<int> > ReliefGenerator::generate(Mode mode)
 {

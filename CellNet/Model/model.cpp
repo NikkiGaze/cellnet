@@ -41,7 +41,7 @@ Matrix Model::generateRelief(int mode)
 void Model::loadStations()
 {
     std::vector<StationDescr> descrs = Printer::instance()->loadStations();
-    for(int i = 0; i < descrs.size(); i++)
+    for(size_t i = 0; i < descrs.size(); i++)
     {
         StationDescr d = descrs.at(i);
         addStationPlace(d.x, d.y, d.h);
@@ -53,7 +53,7 @@ void Model::clear()
     map.clear();
 }
 
-void Model::startAlgorihtm(int population_count, int crossing, int generations_count) const
+void Model::startAlgorihtm(int population_count, int crossing, int generations_count, QProgressDialog *dlg) const
 {
     if(stations.size() == 0)
         return;
@@ -62,6 +62,9 @@ void Model::startAlgorihtm(int population_count, int crossing, int generations_c
 
     for(int generation_num = 0; generation_num < generations_count; generation_num++)
     {
+        if(dlg->wasCanceled())
+            return;
+
         std::vector<Genom> population = algo.getPopulation();
 
         for(unsigned int sub = 0; sub < population.size(); sub++)
@@ -75,7 +78,10 @@ void Model::startAlgorihtm(int population_count, int crossing, int generations_c
         for(unsigned int sub = 0; sub < population.size(); sub++)
             Printer::instance()->addText(population.at(sub).toString());
 
+        Printer::instance()->addText(" Average cov for station: ", algo.getAverageCoverage());
+
         algo.process();
+        dlg->setValue(generation_num);
     }
     Printer::instance()->print();
 }

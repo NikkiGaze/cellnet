@@ -4,6 +4,9 @@
 #include <set>
 #include <vector>
 
+
+#include "QProgressDialog"
+
 class CoverageCalculator;
 class MapScene;
 class Genom;
@@ -28,7 +31,7 @@ public:
     void loadStations();
     void clear();
     void runDemo();
-    void startAlgorihtm(int population_count, int crossing, int generations_count) const;
+    void startAlgorihtm(int population_count, int crossing, int generations_count, QProgressDialog *dlg) const;
 
     CoverageMask calcCoverage(const Genom &gen) const;
     std::vector<Station *> getStations() const;

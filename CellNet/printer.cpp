@@ -52,7 +52,7 @@ void Printer::addText(const std::string &str, int val)
 
 void Printer::print() const
 {
-    std::ofstream out("myfile.txt");
+    std::ofstream out("generations_out.txt");
     for(size_t i = 0; i < text.size(); i++)
         out << text.at(i) << std::endl;
     out.close();

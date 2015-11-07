@@ -39,6 +39,7 @@ public:
     void process();
     void setSurvivalFactor(unsigned int gen_num, unsigned int factor);
     std::vector<Genom> getPopulation() const;
+    float getAverageCoverage() const;
 };
 
 #endif // GENETIC_HPP
