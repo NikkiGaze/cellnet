@@ -30,6 +30,10 @@ void Model::addStationPlace(int _x, int _y, int _h)
 
 Matrix Model::generateRelief(int mode)
 {
+    if(mode == ReliefGenerator::FILE)
+        return Matrix();
+
+    clear();
     float rastrSize = 20.0;
     map = ReliefGenerator::generate((ReliefGenerator::Mode)mode);
     calculator->setMap(map, rastrSize);

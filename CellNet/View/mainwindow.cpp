@@ -167,8 +167,10 @@ void MainWindow::slotStartAlgorihtm()
 
 void MainWindow::slotGenerateRelief(int mode)
 {
-    model->clear();
     Matrix map = model->generateRelief(mode);
+    if(map.empty())
+        return;
+
     scene->fillMap(map);
     for(size_t i = 0; i < model->getStations().size(); i++)
     {
