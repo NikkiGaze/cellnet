@@ -34,7 +34,7 @@ class Printer
 public:
     std::vector<StationDescr> loadStations() const;
     void addText(const std::string &str, int val = -1);
-    void print() const;
+    void print();
 
     static Printer * instance();
 };

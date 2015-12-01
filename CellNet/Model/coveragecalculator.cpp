@@ -1,22 +1,43 @@
 #include "coveragecalculator.hpp"
 
 #include <cmath>
-#include <iostream>
 
-inline float module(int x, int y)
+#include "genetic.hpp"
+
+CoverageCalculator::CoverageCalculator(float _radius, float _rastrSize) : radius(_radius), rastrSize(_rastrSize)
 {
-    return sqrt(x * x + y * y);
 }
 
-CoverageCalculator::CoverageCalculator()
+void CoverageCalculator::load(std::vector<Station*> _stations)
 {
-
+    stations = _stations;
 }
 
-void CoverageCalculator::setMap(std::vector<std::vector<int> > _map, float _rastrSize)
+void CoverageCalculator::calcMask(const std::vector<std::vector<int> > &map)
 {
-    map = _map;
-    rastrSize = _rastrSize;
+    maskMap.clear();
+    for(size_t x = 0; x < map.size(); x++)
+    {
+        maskMap.push_back(std::vector<long int>());
+        for(size_t y = 0; y < map.at(x).size(); y++)
+            maskMap.at(x).push_back(0);
+    }
+    //HERE WILL BE GPU CODE
+    for(size_t x = 0; x < maskMap.size(); x++)
+    {
+        for(size_t y = 0; y < maskMap.at(x).size(); y++)
+        {
+            int mask = 1;
+            for(size_t i = 0; i < stations.size(); i++)
+            {
+                if(isPointVisible(x, y, *stations.at(i), map))
+                {
+                    maskMap.at(x).at(y) |= mask;
+                }
+                mask = mask << 1;
+            }
+        }
+    }
 }
 
 std::vector<std::pair<int, int> > CoverageCalculator::getPointsOnRay(int stationX, int stationY, int _x, int _y, int t) const
@@ -36,56 +57,62 @@ std::vector<std::pair<int, int> > CoverageCalculator::getPointsOnRay(int station
         res.push_back(point);
     }
 
-    std::cout << std::endl;
     return res;
 }
 
-std::set<std::pair<int, int> > CoverageCalculator::calculate(Station * station, float radius) const
+CoverageMask CoverageCalculator::getCoverageMask(const Genom gen) const
 {
     CoverageMask res;
-    int stationX = station->x;
-    int stationY = station->y;
-    float stationHeight = station->h + map.at(stationX).at(stationY);
-
-    int startX = std::max((float)0, stationX - radius);
-    int startY = std::max((float)0, stationY - radius);
-    int endX = std::min((float)map.size() - 1, stationX + radius);
-    int endY = std::min((float)map.at(0).size() - 1, stationY + radius);
-
-    //1st: found rect with 2 * r
-    for(int x = startX; x <= endX; x++)
-        for(int y = startY; y <= endY; y++)
+    for(size_t x = 0; x < maskMap.size(); x++)
+    {
+        for(size_t y = 0; y < maskMap.at(x).size(); y++)
         {
-            //2st: bound it with circle
-
-            float dist = module(stationX - x, stationY - y);
-            if(dist > radius)
-                continue;
-
-            //3st: check visibility
-            int t = std::ceil(dist * sqrt(2.0));
-
-            std::vector<std::pair<int, int> > pointsOnRay = getPointsOnRay(stationX, stationY, x, y, t);
-            float highVector = (map.at(x).at(y) - stationHeight) / t;
-
-            bool isVisible = true;
-            for(size_t t = 0; t < pointsOnRay.size(); t++)
-            {
-                int tmp_x = pointsOnRay.at(t).first;
-                int tmp_y = pointsOnRay.at(t).second;
-                float rayHeght = stationHeight + highVector * t;
-                float realHeight = map.at(tmp_x).at(tmp_y);
-                if(rayHeght < realHeight)
-                {
-                    isVisible = false;
-                    break;
-                }
-            }
-
-            if(!isVisible)
-                continue;
-
-            res.insert(std::make_pair(x, y));
+            if(gen.genom() & maskMap.at(x).at(y))
+                res.push_back(std::make_pair(x, y));
         }
+    }
     return res;
+}
+
+int CoverageCalculator::getCoverageSize(const Genom gen) const
+{
+    int res = 0;
+    for(size_t x = 0; x < maskMap.size(); x++)
+    {
+        for(size_t y = 0; y < maskMap.at(x).size(); y++)
+        {
+            if(gen.genom() & maskMap.at(x).at(y))
+                res++;
+        }
+    }
+    return res;
+}
+
+bool CoverageCalculator::isPointVisible(int x, int y, const Station &station, const std::vector<std::vector<int> > &map) const
+{
+    float dist = hypot(station.x - x, station.y - y);
+    if(dist > radius)
+        return false;
+
+    int t = std::ceil(dist * sqrt(2.0));
+
+    float stationHeight = station.h + map.at(station.x).at(station.y);
+    std::vector<std::pair<int, int> > pointsOnRay = getPointsOnRay(station.x, station.y, x, y, t);
+    float highVector = (map.at(x).at(y) - stationHeight) / t;
+
+    bool isVisible = true;
+    for(size_t t = 0; t < pointsOnRay.size(); t++)
+    {
+        int tmp_x = pointsOnRay.at(t).first;
+        int tmp_y = pointsOnRay.at(t).second;
+        float rayHeght = stationHeight + highVector * t;
+        float realHeight = map.at(tmp_x).at(tmp_y);
+        if(rayHeght < realHeight)
+        {
+            isVisible = false;
+            break;
+        }
+    }
+
+    return isVisible;
 }

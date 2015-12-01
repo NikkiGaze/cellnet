@@ -7,10 +7,10 @@
 #include "genetic.hpp"
 #include "printer.hpp"
 
-Model::Model(float _radius)
+Model::Model(float radius)
 {
-    radius = _radius;
-    calculator = new CoverageCalculator;
+    float rastrSize = 20.f;
+    calculator = new CoverageCalculator(radius, rastrSize);
 }
 
 Model::~Model()
@@ -33,12 +33,9 @@ Matrix Model::generateRelief(int mode)
     if(mode == ReliefGenerator::FILE)
         return Matrix();
 
-    clear();
-    float rastrSize = 20.0;
+    map.clear();
     map = ReliefGenerator::generate((ReliefGenerator::Mode)mode);
-    calculator->setMap(map, rastrSize);
-    for(size_t i = 0; i < stations.size(); i++)
-        stations.at(i)->mask = calculator->calculate(stations.at(i), radius);
+    calculator->calcMask(map);
     return map;
 }
 
@@ -50,6 +47,7 @@ void Model::loadStations()
         StationDescr d = descrs.at(i);
         addStationPlace(d.x, d.y, d.h);
     }
+    calculator->load(stations);
 }
 
 void Model::clear()
@@ -73,8 +71,7 @@ void Model::startAlgorihtm(int population_count, int crossing, int generations_c
 
         for(unsigned int sub = 0; sub < population.size(); sub++)
         {
-            CoverageMask mask = calcCoverage(population.at(sub));
-            algo.setSurvivalFactor(sub, mask.size());
+            algo.setSurvivalFactor(sub, calculator->getCoverageSize(population.at(sub)));
         }
 
         population = algo.getPopulation();
@@ -90,26 +87,9 @@ void Model::startAlgorihtm(int population_count, int crossing, int generations_c
     Printer::instance()->print();
 }
 
-CoverageMask Model::calcCoverage(const Genom &gen) const
+CoverageMask Model::calcCoverageMask(const Genom &gen) const
 {
-    if(stations.size() == 0)
-        return CoverageMask();
-
-    CoverageMask mask;
-    for(size_t stations_iter = 0; stations_iter < stations.size(); stations_iter++)
-    {
-        if(!gen.contains(stations_iter))
-            continue;
-
-        Station * station = stations.at(stations_iter);
-
-        CoverageMask tmp_mask = station->mask;
-        for(std::set<std::pair<int, int> >::iterator mask_iter = tmp_mask.begin(); mask_iter != tmp_mask.end(); ++mask_iter)
-        {
-            mask.insert(*mask_iter);
-        }
-    }
-    return mask;
+    return calculator->getCoverageMask(gen);
 }
 
 std::vector<Station *> Model::getStations() const

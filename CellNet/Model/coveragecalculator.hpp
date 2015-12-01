@@ -4,34 +4,39 @@
 #include <vector>
 #include <set>
 
-typedef std::set<std::pair<int, int> > CoverageMask;
+typedef std::vector<std::pair<int, int> > CoverageMask;
+typedef std::vector<std::vector<long int> > MaskedMap;
+
+struct Genom;
 
 struct Station
 {
-    Station(int _x, int _y, int _h)
+    Station(int _x, int _y, int _h) : x(_x), y (_y), h (_h)
     {
-        x = _x;
-        y = _y;
-        h = _h;
     }
-
     int x;
     int y;
     float h;
-    CoverageMask mask;
 };
 
 class CoverageCalculator
 {
+    float radius;
     float rastrSize;
-    std::vector<std::vector<int> > map;
+    std::vector<Station *> stations;
+    MaskedMap maskMap;
 
     std::vector<std::pair<int, int> > getPointsOnRay(int stationX, int stationY, int _x, int _y, int t) const;
 
 public:
-    CoverageCalculator();
-    void setMap(std::vector<std::vector<int> > _map, float _rastrSize);
-    std::set<std::pair<int, int> > calculate(Station *station, float radius) const;
+    CoverageCalculator(float _radius, float _rastrSize);
+    void load(std::vector<Station *> _stations);
+    void calcMask(const std::vector<std::vector<int> > &map);
+
+    CoverageMask getCoverageMask(const Genom gen) const;
+    int getCoverageSize(const Genom gen) const;
+private:
+    bool isPointVisible(int x, int y, const Station &station, const std::vector<std::vector<int> > &map) const;
 };
 
 #endif // COVERAGECALCULATOR_HPP

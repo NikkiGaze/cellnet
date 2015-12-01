@@ -17,6 +17,7 @@ public:
     void mutate(unsigned int count = 1);
 
     int bitSum() const;
+    int genom() const;
     bool contains(unsigned int bit) const;
 
     std::string toString(bool just_gen = false) const;

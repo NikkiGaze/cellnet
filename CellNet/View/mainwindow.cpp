@@ -141,7 +141,7 @@ void MainWindow::slotShowDemo()
         }
     }
 
-    CoverageMask mask = model->calcCoverage(gen);
+    CoverageMask mask = model->calcCoverageMask(gen);
 
     scene->addMask(mask);
     coverageCount_edit->setText(QString::number(mask.size()));

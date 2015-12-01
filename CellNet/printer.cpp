@@ -50,10 +50,11 @@ void Printer::addText(const std::string &str, int val)
     text.push_back(string);
 }
 
-void Printer::print() const
+void Printer::print()
 {
-    std::ofstream out("generations_out.txt");
+    std::ofstream out("generations_out.txt", std::ios::out);
     for(size_t i = 0; i < text.size(); i++)
         out << text.at(i) << std::endl;
     out.close();
+    text.clear();
 }

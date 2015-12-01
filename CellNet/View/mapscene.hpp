@@ -34,9 +34,9 @@ class MapScene : public QGraphicsScene
     class Mask : public QGraphicsItem
     {
     public:
-        std::set<std::pair<int, int> > mask;
+        std::vector<std::pair<int, int> > mask;
 
-        Mask(std::set<std::pair<int, int> > _mask, QGraphicsItem * parent = NULL);
+        Mask(std::vector<std::pair<int, int> > _mask, QGraphicsItem * parent = NULL);
         virtual QRectF boundingRect() const;
         virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     };
@@ -50,7 +50,7 @@ public:
     void fillMap(std::vector<std::vector<int> > map);
     bool addRealStation(int _x, int _y);
     bool addEmptyStation(int _x, int _y);
-    void addMask(std::set<std::pair<int, int> > _mask);
+    void addMask(std::vector<std::pair<int, int> > _mask);
 };
 
 #endif // MAPSCENE_HPP

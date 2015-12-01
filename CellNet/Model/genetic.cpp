@@ -31,6 +31,12 @@ int Genom::bitSum() const
     }
     return res;
 }
+
+int Genom::genom() const
+{
+    return mask;
+}
+
 bool Genom::contains(unsigned int bit) const
 {
     int tmp = 1 << bit;

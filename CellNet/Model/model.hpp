@@ -13,7 +13,7 @@ class Genom;
 
 struct Station;
 
-typedef std::set<std::pair<int, int> > CoverageMask;
+typedef std::vector<std::pair<int, int> > CoverageMask;
 typedef std::vector<std::vector<int> > Matrix;
 
 class Model
@@ -22,10 +22,9 @@ class Model
 
     std::vector<Station *> stations;
     Matrix map;
-    float radius;
 
 public:
-    Model(float _radius);
+    Model(float radius);
     ~Model();
     Matrix generateRelief(int mode);
     void loadStations();
@@ -33,7 +32,7 @@ public:
     void runDemo();
     void startAlgorihtm(int population_count, int crossing, int generations_count, QProgressDialog *dlg) const;
 
-    CoverageMask calcCoverage(const Genom &gen) const;
+    CoverageMask calcCoverageMask(const Genom &gen) const;
     std::vector<Station *> getStations() const;
 
 private:

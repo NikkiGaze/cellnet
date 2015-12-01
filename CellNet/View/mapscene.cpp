@@ -60,7 +60,7 @@ void MapScene::BaseStation::paint(QPainter *painter, const QStyleOptionGraphicsI
 
 //----------------------------------------------------------------
 
-MapScene::Mask::Mask(std::set<std::pair<int, int> > _mask, QGraphicsItem * parent) : QGraphicsItem(parent)
+MapScene::Mask::Mask(std::vector<std::pair<int, int> > _mask, QGraphicsItem * parent) : QGraphicsItem(parent)
 {
     mask = _mask;
 }
@@ -77,7 +77,7 @@ void MapScene::Mask::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 
     painter->setPen(Qt::blue);
     painter->setBrush(QColor(0, 0, 255, 10));
-    for(std::set<std::pair<int, int> >::iterator mask_iter = mask.begin(); mask_iter != mask.end(); ++mask_iter)
+    for(std::vector<std::pair<int, int> >::iterator mask_iter = mask.begin(); mask_iter != mask.end(); ++mask_iter)
     {
         painter->drawRect(std::floor((*mask_iter).first / step) * scaleFactor, std::floor((*mask_iter).second / step) * scaleFactor, scaleFactor, scaleFactor);
     }
@@ -143,7 +143,7 @@ bool MapScene::addEmptyStation(int _x, int _y)
     return true;
 }
 
-void MapScene::addMask(std::set<std::pair<int, int> > _mask)
+void MapScene::addMask(std::vector<std::pair<int, int> > _mask)
 {
     if(_mask.empty())
         return;
